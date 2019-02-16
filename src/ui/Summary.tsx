@@ -45,14 +45,16 @@ export class Summary extends React.Component<SummaryProps, SummaryState> {
   }
 
   private saveResult = () => {
-    const database = firebase.database();
-    const result = JSON.parse(JSON.stringify(this.props.trail));
-    console.log('saving result', result);
-    const newPostRef = database.ref('results').push(result);
-    this.setState({
-      newPostKey: newPostRef.key
-    });
-    console.log('saving done', newPostRef.key);
+    if (firebase && firebase.database) {
+      const database = firebase.database();
+      const result = JSON.parse(JSON.stringify(this.props.trail));
+      console.log('saving result', result);
+      const newPostRef = database.ref('results').push(result);
+      this.setState({
+        newPostKey: newPostRef.key
+      });
+      console.log('saving done', newPostRef.key);  
+    }
   }
 
   public render = () => {
@@ -80,9 +82,7 @@ export class Summary extends React.Component<SummaryProps, SummaryState> {
           <div>Total: {this.props.trail.index}</div>
         </Card>
         <div className="bp3-callout">
-          Result has been indexed with reference '{this.state.newPostKey}' for
-          later analysis. If you are offline do not close this window until you
-          are reconnected otherwise result will not be persisted.
+          { this.state.newPostKey.length > 0 ? 'Result has been indexed with reference ' + this.state.newPostKey + ' for later analysis. If you are offline do not close this window until you are reconnected otherwise result will not be persisted.' : '' }
         </div>
         <br />
         <Button
