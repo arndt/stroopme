@@ -1,3 +1,4 @@
+
 enum TrailState {
   LAUNCHED,
   STARTED,
@@ -22,8 +23,8 @@ export class Step {
   constructor(shuffle: boolean) {
     this.startTime = new Date().getTime();
     this.choices = [1, 2, 3, 0];
-    var rnd1 = this.random(0, 3);
-    var rnd2 = this.random(0, 3);
+    const rnd1 = this.random(0, 3);
+    const rnd2 = this.random(0, 3);
     this.text = rnd1;
     this.color = rnd2;
     if (shuffle) {
@@ -32,9 +33,9 @@ export class Step {
   }
 
   public shuffle = () => {
-    for (var i = 0; i < this.choices.length; ++i) {
-      var rnd = this.random(0, 3);
-      var tmp = this.choices[i];
+    for (let i = 0; i < this.choices.length; ++i) {
+      const rnd = this.random(0, 3);
+      const tmp = this.choices[i];
       this.choices[i] = this.choices[rnd];
       this.choices[rnd] = tmp;
     }
@@ -57,15 +58,15 @@ export class Step {
 
 export class Trail {
   public name: string;
-  public startTime = 0;
-  public stopTime = 0;
+  public startTime: number = 0;
+  public stopTime: number = 0;
   public duration: number = 90;
   public state: TrailState = TrailState.LAUNCHED;
   public mode: TrailMode = TrailMode.COLOR;
   public shuffle: boolean = false;
-  public hitCount = 0;
-  public failCount = 0;
-  public index = 0;
+  public hitCount: number = 0;
+  public failCount: number = 0;
+  public index: number = 0;
   public current: Step;
   public steps: Step[] = [];
 
@@ -75,7 +76,6 @@ export class Trail {
     this.failCount = 0;
     this.startTime = new Date().getTime();
     this.current = new Step(true);
-    return null;
   }
 
   public stop() {
@@ -87,14 +87,14 @@ export class Trail {
   }
 
   public validate(selectedOption: number) {
-    var success = this.current.commitSelection(this.mode, selectedOption);
+    const success = this.current.commitSelection(this.mode, selectedOption);
     this.steps.push(this.current);
     success ? ++this.hitCount : ++this.failCount;
     return success;
   }
 
   public newStep = () => {
-    var item = new Step(false);
+    const item = new Step(false);
     if (this.shuffle) {
       item.shuffle();
     } else {

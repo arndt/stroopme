@@ -3,12 +3,12 @@ import { Button, ButtonGroup, Card, Switch } from '@blueprintjs/core';
 import { TimeInput } from './TimeInput';
 import * as Model from './Model';
 import leftPad = require('left-pad');
+import { DebugProps } from './debug-props';
 
 export interface SettingsProps {
-  trail: Model.Trail;
-  // tslint:disable-next-line:no-any
-  debug: any;
-  nextStep: Function;
+  readonly trail: Model.Trail;
+  readonly debug: DebugProps;
+  readonly nextStep: () => void;
 }
 
 interface SettingsState {
@@ -16,14 +16,16 @@ interface SettingsState {
   validForm: boolean;
 }
 
-export class Settings extends React.PureComponent<SettingsProps, SettingsState> {
-  
+export class Settings extends React.PureComponent<
+  SettingsProps,
+  SettingsState
+> {
   constructor(props: SettingsProps) {
     super(props);
     this.state = { verbose: true, validForm: false };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.validateName(this.props.trail.name);
   }
 
@@ -71,7 +73,7 @@ export class Settings extends React.PureComponent<SettingsProps, SettingsState> 
               initTime={
                 leftPad(Math.floor(this.props.trail.duration / 60), 2) +
                 ':' +
-                leftPad((this.props.trail.duration % 60), 2)
+                leftPad(this.props.trail.duration % 60, 2)
               }
               className="form-control"
               mountFocus={true}
@@ -95,7 +97,7 @@ export class Settings extends React.PureComponent<SettingsProps, SettingsState> 
           ' Please enter your mail above to identify yourself'}
       </Card>
     );
-  }  
+  }
 
   // tslint:disable-next-line:no-any
   private handleNameChange = (event: any) => {
@@ -118,8 +120,8 @@ export class Settings extends React.PureComponent<SettingsProps, SettingsState> 
   }
 
   private handleDurationFieldChange = (value: string) => {
-    var mins = Number.parseInt(value.substr(0, 2), 10);
-    var secs = Number.parseInt(value.substr(3, 2), 10);
+    const mins = Number.parseInt(value.substr(0, 2), 10);
+    const secs = Number.parseInt(value.substr(3, 2), 10);
     this.props.trail.duration = mins * 60 + secs;
   }
 
@@ -129,9 +131,8 @@ export class Settings extends React.PureComponent<SettingsProps, SettingsState> 
 
   private validateName = (value: string) => {
     this.setState({
-      validForm: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-        value
-      )
+      validForm: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)
     });
   }
+
 }

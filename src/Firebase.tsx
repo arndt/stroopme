@@ -1,8 +1,6 @@
 import * as firebase from 'firebase/app';
-import 'firebase/database';
 
-var config = {
-
+const config = {
 };
 
 if (!firebase.apps.length) {

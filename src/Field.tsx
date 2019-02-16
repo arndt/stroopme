@@ -20,9 +20,9 @@ interface FieldState {
 }
 
 export class Field extends React.PureComponent<FieldProps, FieldState> {
-  interval: unknown;
+  private interval: unknown;
 
-  constructor(props: FieldProps) {
+  public constructor(props: FieldProps) {
     super(props);
 
     this.state = {
@@ -34,7 +34,7 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
     };
   }
 
-  tick() {
+  public tick() {
     this.setState(prevState => ({
       seconds: prevState.seconds + 1
     }));
@@ -44,11 +44,11 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
     }
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.startTimer();
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     // tslint:disable-next-line:no-any
     clearInterval(this.interval as any);
   }
@@ -122,12 +122,12 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
   }
 
   private getColor = (value: number) => {
-    var color = ['#f30013', '#0072cf', '#66bc29', '#f4af00'];
+    const color = ['#f30013', '#0072cf', '#66bc29', '#f4af00'];
     return color[value];
   }
 
   private getCaption = (value: number) => {
-    var caption = ['Red', 'Blue', 'Green', 'Yellow'];
+    const caption = ['Red', 'Blue', 'Green', 'Yellow'];
     return caption[value];
   }
 
@@ -175,9 +175,9 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
   }
 
   private timeLeft = () => {
-    var remaining = this.state.trail.duration - this.state.seconds;
-    var mins = Math.floor(remaining / 60);
-    var secs = Math.floor(remaining % 60);
+    const remaining = this.state.trail.duration - this.state.seconds;
+    const mins = Math.floor(remaining / 60);
+    const secs = Math.floor(remaining % 60);
     return leftPad(mins, 2) + ':' + leftPad(secs, 2);
   }
 
@@ -203,6 +203,6 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
         </Card>
       );
     }
-    return '';
+    return <></>;
   }
 }
