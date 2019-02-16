@@ -4,7 +4,7 @@ import * as Model from './Model';
 import { Settings } from './Settings';
 import { Field } from './Field';
 import { Summary } from './Summary';
-import { DebugProps } from './debug-props';
+import { DebugProps } from './DebugProps';
 
 export interface PanelControlProps {
   readonly trail: Model.Trail;

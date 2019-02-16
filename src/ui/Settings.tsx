@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Card, Switch } from '@blueprintjs/core';
 import { TimeInput } from './TimeInput';
 import * as Model from './Model';
 import leftPad = require('left-pad');
-import { DebugProps } from './debug-props';
+import { DebugProps } from './DebugProps';
 
 export interface SettingsProps {
   readonly trail: Model.Trail;
