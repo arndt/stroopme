@@ -1,19 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "module": "commonjs",
-    "outDir": "lib",
-    "lib": ["dom", "esnext"],
+    "outDir": "dist",
     "jsx": "react",
+    "experimentalDecorators": true,
     "noImplicitAny": true,
     "pretty": true,
     "sourceMap": true,
     "declaration": true,
-    "experimentalDecorators": true,
     "moduleResolution": "node",
     "stripInternal": true,
     "plugins": [{ "name": "typescript-tslint-plugin" }]
   },
-  "include": ["./src/**/*.ts", "./typings/**/*.d.ts"],
-  "exclude": ["./src/xest", "./src/**/*.xest.ts"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "./src/**/*"
+  ]
 }
