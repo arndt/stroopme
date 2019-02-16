@@ -4,15 +4,15 @@ A project that uses the Stroop effect as the basis for a small training game. Th
 
 ## Background
 
-The project serves me as a real example to improve my own handling of development and code and to better understand real project problems and challenges in development.
+The project serves as a real world example to improve my own knowledge how to code and to gain a better understand of project problems and challenges in development.
 
 ## Contributing
 
-You are welcome to contribute your comments to the improvement. Please use pull reuqests or just email me.
+You are welcome to contribute your comments and improvements. Please use pull requests or just email me.
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
