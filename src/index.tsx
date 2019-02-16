@@ -11,10 +11,10 @@ import * as Model from './Model';
 
 const trail = new Model.Trail();
 
-const App = () => (
-  <div>
+function App() {
+  return <div>
     <PanelControl trail={trail} />
-  </div>
-);
+  </div>;
+}
 
 render(<App />, document.getElementById('root'));

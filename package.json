@@ -37,7 +37,7 @@
     "@types/jest": "24.0.1",
     "@types/prop-types": "15.5.8",
     "@types/react": "16.8.1",
-    "@types/react-dom": "16.8.1",
+    "@types/react-dom": "16.8.0",
     "rimraf": "2.6.3",
     "ts-jest": "23.10.5",
     "ts-node": "8.0.1",
@@ -115,6 +115,7 @@
   "resolutions": {
     "merge": ">=1.2.1",
     "@types/react": "16.8.1",
+    "@types/react-dom": "16.8.0",
     "@types/prop-types": "15.5.8"
   }
 }

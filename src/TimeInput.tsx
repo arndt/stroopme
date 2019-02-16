@@ -1,23 +1,46 @@
 import * as React from 'react';
 import { Card } from '@blueprintjs/core';
 
-interface TimeInputProps {
-  name: string;
-  initTime: string;
-  disabled: boolean;
-  mountFocus: boolean;
-  onTimeChange: Function;
-  onBlurHandler: Function;
-  onFocusHandler: Function;
+export interface TimeInputDefaultProps {
   placeholder: string;
-  type: string;
-  defaultProps: unknown;
 }
 
-export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
-  lastVal: string;
-  _input: unknown;
-  defaultProps: TimeInputProps;
+export interface TimeInputProps {
+  readonly name?: string;
+  readonly initTime?: string;
+  readonly disabled?: boolean;
+  readonly mountFocus: boolean;
+  readonly onTimeChange: (val: string) => void;
+  readonly onBlurHandler?: (e: React.FocusEvent) => void;
+  readonly onFocusHandler?: (e: React.FocusEvent) => void;
+  readonly placeholder: string;
+  readonly type: string;
+  readonly defaultProps?: TimeInputDefaultProps;
+  readonly className: string;
+}
+
+export interface TimeInputState {
+  time: string;
+}
+
+function isValidHour(hours: number) {
+  return Number.isInteger(hours) && hours >= 0 && hours < 24;
+}
+function isValidMinutes(hours: number, minutes: number) {
+  return (
+    (Number.isInteger(minutes) && isValidHour(hours)) ||
+    Number.isNaN(minutes)
+  );
+}
+
+export class TimeInput extends React.PureComponent<TimeInputProps, TimeInputState> {
+
+  public static readonly defaultProps: TimeInputDefaultProps = {
+    placeholder: ' '
+  };
+
+  public lastVal: string;
+  public _input: HTMLInputElement;
 
   constructor(props: TimeInputProps) {
     super(props);
@@ -27,7 +50,7 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     this.lastVal = '';
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     if (!this.props.disabled && this.props.mountFocus) {
       setTimeout(() => {
         //        this._input.focus();
@@ -35,7 +58,7 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     }
   }
 
-  componentDidUpdate() {
+  public componentDidUpdate() {
     if (this.props.mountFocus) {
       setTimeout(() => {
         this._input.focus();
@@ -43,21 +66,20 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     }
   }
 
-  componentWillReceiveProps(nextProps: TimeInputProps) {
+  public componentWillReceiveProps(nextProps: TimeInputProps) {
     if (nextProps.initTime) {
       this.onChangeHandler(nextProps.initTime);
     }
   }
 
-  isValid(val: string) {
-    var letterArr = val
+  public isValid(val: string) {
+    const letterArr = val
         .split(':')
         .join('')
         .split(''),
-      regexp = /^\d{0,2}?\:?\d{0,2}$/,
-      valArr = [];
-
-    var [hoursStr, minutesStr] = val.split(':');
+      regexp = /^\d{0,2}?\:?\d{0,2}$/;
+    const valArr: string[] = [];
+    const [hoursStr, minutesStr] = val.split(':');
 
     if (!regexp.test(val)) {
       return false;
@@ -66,12 +88,7 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     const hours: number = Number(hoursStr);
     const minutes: number = Number(minutesStr);
 
-    const isValidHour = hour =>
-      Number.isInteger(hours) && hours >= 0 && hours < 24;
-    const isValidMinutes = (minutes: unknown) =>
-      (Number.isInteger(minutes as number) && hours >= 0 && hours < 24) ||
-      Number.isNaN(minutes as number);
-    if (!isValidHour(hours) || !isValidMinutes(minutes)) {
+    if (!isValidHour(hours) || !isValidMinutes(hours, minutes)) {
       return false;
     }
 
@@ -80,7 +97,7 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     }
 
     if (valArr.indexOf(':')) {
-      valArr = val.split(':');
+      valArr.push.apply(valArr, val.split(':'));
     } else {
       valArr.push(val);
     }
@@ -105,8 +122,8 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     return true;
   }
 
-  onChangeHandler(val: string) {
-    if (val === this.state.time) {
+  public onChangeHandler(val: string) {
+    if (val === this.props.initTime ) {
       return;
     }
     if (this.isValid(val)) {
@@ -138,14 +155,11 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     }
   }
 
-  getType() {
-    if (this.props.type) {
-      return this.props.type;
-    }
-    return 'tel';
+  public getType() {
+    return this.props.type || 'tel';
   }
 
-  render() {
+  public render() {
     return (
       <input
         name={this.props.name ? this.props.name : undefined}
@@ -170,7 +184,3 @@ export class TimeInput extends React.PureComponent<TimeInputProps, {}> {
     );
   }
 }
-
-TimeInput.defaultProps = {
-  placeholder: ' '
-};
