@@ -1,3 +1,5 @@
+import { observable } from 'mobx';
+import * as leftPad from 'left-pad';
 
 enum TrailState {
   LAUNCHED,
@@ -11,6 +13,7 @@ enum TrailMode {
 }
 
 export class Step {
+  @observable
   public mode: TrailMode;
   public text: number;
   public color: number;
@@ -57,6 +60,10 @@ export class Step {
 }
 
 export class Trail {
+  @observable
+  private seconds: number;
+  private timer: unknown;
+
   public name: string;
   public startTime: number = 0;
   public stopTime: number = 0;
@@ -76,6 +83,7 @@ export class Trail {
     this.failCount = 0;
     this.startTime = new Date().getTime();
     this.current = new Step(true);
+    this.startTimer();
   }
 
   public stop() {
@@ -84,6 +92,14 @@ export class Trail {
     this.index = Math.floor(
       ((this.hitCount - this.failCount) / this.duration) * 100
     );
+    this.stopTimer();
+  }
+
+  public get timeLeft() {
+    const remaining = this.duration - this.seconds;
+    const mins = Math.floor(remaining / 60);
+    const secs = Math.floor(remaining % 60);
+    return leftPad(mins, 2) + ':' + leftPad(secs, 2);
   }
 
   public validate(selectedOption: number) {
@@ -102,5 +118,16 @@ export class Trail {
     }
     this.current = item;
     return this.current;
+  }
+
+  public startTimer() {
+    this.seconds = 0;
+    this.timer = setInterval(() => {
+      this.seconds += 1;
+    }, 1000);
+  }
+
+  public stopTimer() {
+    clearInterval(this.timer as number);
   }
 }
