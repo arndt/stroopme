@@ -70,7 +70,7 @@ test ('pulseSecondIncreaseTest ', (done) => {
     Mobx.reaction(() => pulse.seconds, (data) => {
         expect(data).toBe(expectedValues.shift());
         // tslint:disable-next-line:no-unused-expression
-        if (expectedValues.length) {
+        if (expectedValues.length === 0) {
             pulse.stop();
             done();
         }
@@ -93,8 +93,9 @@ test ('pulseRestartTest ', (done) => {
     Mobx.reaction(() => pulse.seconds, (data) => {
         mock(data);
         // tslint:disable-next-line:no-unused-expression
-        switch(data) {
+        switch (data) {
             case 1:
+            expect(mock.mock.calls).toEqual([[1]]);
             pulse.stop();
             pulse.start();
             break;

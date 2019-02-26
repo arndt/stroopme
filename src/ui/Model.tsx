@@ -115,6 +115,9 @@ export class Pulse implements IPulse {
   }
 
   public stop() {
+    if (this.state != PulseState.STARTED) {
+      throw new Error('pulse not in STARTED state');
+    }
     this.timerManager.clearInterval(this.timer as number);
     this.state = PulseState.STOPPED;
   }
