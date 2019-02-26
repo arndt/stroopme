@@ -20,7 +20,6 @@ interface FieldState {
 
 @observer
 export class Field extends React.PureComponent<FieldProps, FieldState> {
-  private interval: unknown;
 
   public constructor(props: FieldProps) {
     super(props);
@@ -145,8 +144,6 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
   }
 
   private finish = () => {
-    // tslint:disable-next-line:no-any
-    clearInterval(this.interval as any);
     this.props.nextStep();
   }
 

@@ -1,4 +1,5 @@
-import { observable } from 'mobx';
+
+import * as Mobx from 'mobx';
 import * as leftPad from 'left-pad';
 
 enum TrailState {
@@ -13,7 +14,6 @@ enum TrailMode {
 }
 
 export class Step {
-  @observable
   public mode: TrailMode;
   public text: number;
   public color: number;
@@ -59,10 +59,73 @@ export class Step {
   }
 }
 
-export class Trail {
-  @observable
-  private seconds: number;
+export enum PulseState {
+  STOPPED,
+  STARTED
+}
+
+export interface IPulse {
+  state: PulseState;
+  seconds: number;
+
+  start(): void;
+  stop(): void;
+}
+
+export interface ITimerBorder {
+  setInterval(cb: () => unknown, ms: number): unknown;
+  setTimeout(cb: () => unknown, ms: number): unknown;
+  clearInterval(timer: unknown): void;
+  clearTimeout(timer: unknown): void;
+}
+
+export interface PulseProps {
+  readonly timerShim: ITimerBorder;
+}
+
+const systemTimerBorder = {
+  setInterval: (cb: () => unknown, ms: number) => setInterval(cb, ms),
+  setTimeout:  (cb: () => unknown, ms: number) => setInterval(cb, ms),
+  clearInterval: (timer: unknown) => clearInterval(timer as any),
+  clearTimeout:  (timer: unknown) => clearTimeout(timer as any)
+};
+
+export class Pulse implements IPulse {
+  @Mobx.observable
+  public state: PulseState = PulseState.STOPPED;
+  @Mobx.observable
+  public seconds: number = 0;
   private timer: unknown;
+  private readonly timerManager: ITimerBorder;
+
+  constructor(props: PulseProps = { timerShim: systemTimerBorder }) {
+    this.timerManager = props.timerShim;
+  }
+
+  public start() {
+    if (this.state != PulseState.STOPPED) {
+      throw new Error('pulse not in STOPPED state');
+    }
+
+    this.seconds = 0;
+    this.timer = this.timerManager.setInterval(() => {
+      this.seconds += 1;
+    }, 1000);
+    this.state = PulseState.STARTED;
+  }
+
+  public stop() {
+    this.timerManager.clearInterval(this.timer as number);
+    this.state = PulseState.STOPPED;
+  }
+}
+
+export interface TrailProps {
+  readonly pulse: Pulse;
+}
+
+export class Trail {
+  private readonly pulse: Pulse;
 
   public name: string;
   public startTime: number = 0;
@@ -77,13 +140,23 @@ export class Trail {
   public current: Step;
   public steps: Step[] = [];
 
+  constructor(props: TrailProps) {
+    this.pulse = props.pulse;
+
+    Mobx.reaction(() => this.pulse.seconds, (data) => {
+      if (data >= this.duration) {
+        this.stop();
+      }
+    });
+  }
+
   public start() {
     this.state = TrailState.STARTED;
     this.hitCount = 0;
     this.failCount = 0;
     this.startTime = new Date().getTime();
     this.current = new Step(true);
-    this.startTimer();
+    this.pulse.start();
   }
 
   public stop() {
@@ -92,11 +165,11 @@ export class Trail {
     this.index = Math.floor(
       ((this.hitCount - this.failCount) / this.duration) * 100
     );
-    this.stopTimer();
+    this.pulse.stop();
   }
 
   public get timeLeft() {
-    const remaining = this.duration - this.seconds;
+    const remaining = this.duration - this.pulse.seconds;
     const mins = Math.floor(remaining / 60);
     const secs = Math.floor(remaining % 60);
     return leftPad(mins, 2) + ':' + leftPad(secs, 2);
@@ -118,16 +191,5 @@ export class Trail {
     }
     this.current = item;
     return this.current;
-  }
-
-  public startTimer() {
-    this.seconds = 0;
-    this.timer = setInterval(() => {
-      this.seconds += 1;
-    }, 1000);
-  }
-
-  public stopTimer() {
-    clearInterval(this.timer as number);
   }
 }
