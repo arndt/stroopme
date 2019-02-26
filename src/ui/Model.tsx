@@ -171,14 +171,22 @@ export class Trail {
     this.pulse.stop();
   }
 
-  public get timeLeft() {
+  public get remainingTime(): string {
     const remaining = this.duration - this.pulse.seconds;
     const mins = Math.floor(remaining / 60);
     const secs = Math.floor(remaining % 60);
-    return leftPad(mins, 2) + ':' + leftPad(secs, 2);
+    return leftPad(mins, 2, '0') + ':' + leftPad(secs, 2, '0');
   }
 
-  public validate(selectedOption: number) {
+  public get remainingMinutes(): string {
+    return leftPad(Math.floor(this.duration / 60), 2, '0');
+  }
+
+  public get remainingSeconds(): string {
+    return leftPad(this.duration % 60, 2, '0');
+  }
+
+  public validate(selectedOption: number): boolean {
     const success = this.current.commitSelection(this.mode, selectedOption);
     this.steps.push(this.current);
     success ? ++this.hitCount : ++this.failCount;

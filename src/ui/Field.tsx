@@ -40,7 +40,7 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
         </div>
         <h3>
           {this.state.debug.verbose}
-          Time left: {this.state.trail.timeLeft}, hits: {this.state.trail.hitCount},
+          Time left: {this.state.trail.remainingTime}, hits: {this.state.trail.hitCount},
           fails: {this.state.trail.failCount}
         </h3>
         <Card className="container">

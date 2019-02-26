@@ -1,6 +1,7 @@
 import * as Mobx from 'mobx';
-import { Pulse, PulseState } from './Model';
+import { Pulse, PulseState, Trail } from './Model';
 import { doesNotReject } from 'assert';
+import { TREE_NODE_LIST } from '@blueprintjs/core/lib/esm/common/classes';
 
 test ('pulseInitialStateTest', () => {
     const pulse = new Pulse();
@@ -108,4 +109,20 @@ test ('pulseRestartTest ', (done) => {
     });
 
     pulse.start();
+});
+
+test('trailRemainingTimeFormatTest', () => {
+    const pulse = new Pulse();
+    const trail = new Trail({pulse: pulse});
+
+    trail.duration = 90;
+    expect(trail.remainingTime).toBe('01:30');
+    expect(trail.remainingMinutes).toBe('01');
+    expect(trail.remainingSeconds).toBe('30');
+
+    trail.duration = 5;
+    expect(trail.remainingTime).toBe('00:05');
+    expect(trail.remainingMinutes).toBe('00');
+    console.log(trail.remainingSeconds);
+    expect(trail.remainingSeconds).toBe('05');
 });
