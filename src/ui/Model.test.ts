@@ -1,7 +1,6 @@
 import * as Mobx from 'mobx';
 import { Pulse, PulseState, Trail } from './Model';
 import { doesNotReject } from 'assert';
-import { TREE_NODE_LIST } from '@blueprintjs/core/lib/esm/common/classes';
 
 test ('pulseInitialStateTest', () => {
     const pulse = new Pulse();

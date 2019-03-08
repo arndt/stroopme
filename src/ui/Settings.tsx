@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Button, ButtonGroup, Card, Switch } from '@blueprintjs/core';
+import { Button, Card, Switch } from '@material-ui/core';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { TimeInput } from './TimeInput';
 import * as Model from './Model';
 import leftPad = require('left-pad');
@@ -44,25 +46,25 @@ export class Settings extends React.PureComponent<
             onChange={this.handleNameChange}
           />
           <h3>Game mode</h3>
-          <ButtonGroup>
-            <Button
+          <ToggleButtonGroup>
+            <ToggleButton
               onClick={this.handleModeChange.bind(this, 0)}
-              active={this.props.trail.mode === 0}
+              selected={this.props.trail.mode === 0}
             >
               Color mode
-            </Button>
-            <Button
+            </ToggleButton>
+            <ToggleButton
               onClick={this.handleModeChange.bind(this, 1)}
-              active={this.props.trail.mode === 1}
+              selected={this.props.trail.mode === 1}
             >
               Text mode
-            </Button>
-          </ButtonGroup>
+            </ToggleButton>
+          </ToggleButtonGroup>
           <p />
           <div>
             <Switch
-              defaultChecked={this.props.trail.shuffle}
-              label="Shuffle answers"
+              checked={this.props.trail.shuffle}
+              value="Shuffle answers"
               onChange={this.handleShuffleSwitchChange}
             />
           </div>
@@ -79,16 +81,17 @@ export class Settings extends React.PureComponent<
 
           <h3>Debugging</h3>
           <Switch
-            defaultChecked={this.props.debug.verbose}
-            label="Pause on results"
+            checked={this.props.debug.verbose}
+            value="Pause on results"
             onChange={this.handleDebuggingChange}
           />
         </Card>
         <Button
-          text="Start challenge"
           disabled={!this.state.validForm}
           onClick={this.handleStartButtonClick}
-        />
+        >
+          Start challenge
+        </Button>
         {!this.state.validForm &&
           ' Please enter your mail above to identify yourself'}
       </Card>

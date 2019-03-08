@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { Card, Button, Intent } from '@blueprintjs/core';
+// import { Card, Button, Intent } from '@blueprintjs/core';
+import { Card, Button } from '@material-ui/core';
+import styled from '@emotion/styled';
 import * as Model from './Model';
 import { observer } from 'mobx-react';
+import { ButtonProps } from '@material-ui/core/Button';
 
 export interface FieldProps {
   readonly trail: Model.Trail;
@@ -17,6 +20,36 @@ interface FieldState {
   readonly paused: boolean;
   readonly trail: Model.Trail;
 }
+
+interface FieldButtonProps extends ButtonProps {
+  readonly position: FieldButtonType;
+}
+
+enum FieldButtonType {
+  TOP_LEFT,
+  TOP_RIGHT,
+  BOTTOM_LEFT,
+  BOTTOM_RIGHT
+}
+
+function colorize (props: {position: FieldButtonType}) {
+  switch (props.position) {
+    case FieldButtonType.TOP_LEFT:
+    break;
+    default:
+    return 'red';
+  }
+  return 'black';
+}
+
+const FieldButton = styled(Button as React.SFC<FieldButtonProps>)`
+  background-color: $((props) => colorize(props))
+  flex: 30%;
+  margin-bottom: 10%;
+  font-weight: bold;
+  height: 50px;
+  font-size: 18px;
+`;
 
 @observer
 export class Field extends React.Component<FieldProps, FieldState> {
@@ -44,21 +77,23 @@ export class Field extends React.Component<FieldProps, FieldState> {
           fails: {this.state.trail.failCount}
         </h3>
         <Card className="container">
-          <Button
-            onClick={this.checkAnswer.bind(this, 0)}
-            className="box-top-left"
-            intent={Intent.NONE}
-            text={this.getCaption(this.state.trail.current.choices[0])}
+          <FieldButton
+            onClick={() => this.checkAnswer(0)}
+            position={FieldButtonType.TOP_LEFT}
+            variant="contained"
             disabled={this.state.paused}
-          />
+          >
+            {this.getCaption(this.state.trail.current.choices[0])}
+          </FieldButton>
           <div className="box-spacer" />
           <Button
-            onClick={this.checkAnswer.bind(this, 1)}
+            onClick={() => this.checkAnswer(1)}
             className="box-top-right"
-            intent={Intent.NONE}
-            text={this.getCaption(this.state.trail.current.choices[1])}
+            variant="contained"
             disabled={this.state.paused}
-          />
+          >
+            {this.getCaption(this.state.trail.current.choices[1])}
+          </Button>
           <div className="box-spacer" />
           <Card className="box-center">
             <span
@@ -69,29 +104,31 @@ export class Field extends React.Component<FieldProps, FieldState> {
           </Card>
           <div className="box-spacer" />
           <Button
-            onClick={this.checkAnswer.bind(this, 2)}
+            onClick={() => this.checkAnswer(2)}
             className="box-bottom-left"
-            intent={Intent.NONE}
-            text={this.getCaption(this.state.trail.current.choices[2])}
+            variant="contained"
             disabled={this.state.paused}
-          />
+          >
+            {this.getCaption(this.state.trail.current.choices[2])}
+          </Button>
           <div className="box-spacer" />
           <Button
-            onClick={this.checkAnswer.bind(this, 3)}
+            onClick={() => this.checkAnswer(3)}
             className="box-bottom-right"
-            intent={Intent.NONE}
-            text={this.getCaption(this.state.trail.current.choices[3])}
+            variant="contained"
             disabled={this.state.paused}
-          />
+          >
+            {this.getCaption(this.state.trail.current.choices[3])}
+          </Button>
         </Card>
         {this.debugPanel()}
         <br />
         <Button
           onClick={this.finish}
-          className=""
-          intent={Intent.PRIMARY}
-          text="End challenge"
-        />
+          variant="contained"
+        >
+          End challenge
+        </Button>
       </Card>
     );
   }
@@ -162,10 +199,11 @@ export class Field extends React.Component<FieldProps, FieldState> {
           <Button
             onClick={this.resume}
             className=""
-            intent={Intent.NONE}
-            text="resume"
+            variant="contained"
             disabled={!this.state.paused}
-          />
+          >
+            resume
+          </Button>
         </Card>
       );
     }

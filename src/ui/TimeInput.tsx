@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card } from '@blueprintjs/core';
+import { Card } from '@material-ui/core';
 
 export interface TimeInputDefaultProps {
   placeholder: string;

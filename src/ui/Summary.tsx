@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Card } from '@blueprintjs/core';
+import { Button, Card } from '@material-ui/core';
 import * as Model from './Model';
 
 import * as firebase from 'firebase/app';
@@ -88,9 +88,10 @@ export class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>
         <br />
         <Button
-          text="Next challenge"
-          onClick={this.handleClickNext.bind(this)}
-        />
+          onClick={this.handleClickNext}
+        >
+          Next challenge
+        </Button>
       </Card>
     );
   }
