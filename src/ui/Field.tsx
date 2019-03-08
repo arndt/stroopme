@@ -19,7 +19,7 @@ interface FieldState {
 }
 
 @observer
-export class Field extends React.PureComponent<FieldProps, FieldState> {
+export class Field extends React.Component<FieldProps, FieldState> {
 
   public constructor(props: FieldProps) {
     super(props);
