@@ -3,16 +3,18 @@ import { Button, Card } from '@blueprintjs/core';
 import * as Model from './Model';
 
 import * as firebase from 'firebase/app';
-// import 'firebase/database';
+import 'firebase/database';
 
 const config = {
-  apiKey: 'AIzaSyBT7faM7nvVgaIrcpq6Km_1Pulw53Xs7_s',
-  authDomain: 'stroopme.firebaseapp.com',
-  databaseURL: 'https://stroopme.firebaseio.com',
-  projectId: 'stroopme',
-  storageBucket: 'testcollection',
-  messagingSenderId: '99325480610'
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  databaseURL: process.env.DATABASE_URL,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID
 };
+
+console.log(config);
 
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
@@ -53,7 +55,7 @@ export class Summary extends React.Component<SummaryProps, SummaryState> {
       this.setState({
         newPostKey: newPostRef.key
       });
-      console.log('saving done', newPostRef.key);  
+      console.log('saving done', newPostRef.key);
     }
   }
 

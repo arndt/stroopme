@@ -4,17 +4,13 @@ const node_modules = fs.readdirSync('node_modules').filter(x => x !== '.bin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require('webpack');
-// const WebpackShellPlugin = require('webpack-shell-plugin');
 
-
-//const globby = require('globby');
-
-
-//fs.writeFileSync('test/all.ts',
-//  globby.sync(['test/**/*-test.ts', 'test/**/*-test.tsx'])
-//    .map(file => file.replace('test/', '').replace(/\.tsx?$/, ''))
-//   .map(file => `import './${file}';`)
-//   .join('\n'));
+let appConfig = {};
+try {
+  const configData = fs.readFileSync('./appconfig.json');
+} catch (e) {
+  console.warn('firebase configuration not found. copy appconfig.dist.json to appconfig.json an apply your personal settings', e);  
+}
 
 module.exports = [{
   mode: 'development',
@@ -74,7 +70,11 @@ module.exports = [{
     new HtmlWebpackPlugin({
        template: './src/ui/index.ejs'
     }),
-    // new webpack.EnvironmentPlugin({ PACKED: 'true' })
+    new webpack.EnvironmentPlugin(
+      { 
+        ...appConfig, 
+        PACKED: 'true' 
+      })
   ]
 }
 ];

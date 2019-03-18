@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Card, Button, Intent } from '@blueprintjs/core';
 import * as Model from './Model';
-import * as leftPad from 'left-pad';
+import { observer } from 'mobx-react';
 
 export interface FieldProps {
   readonly trail: Model.Trail;
@@ -15,12 +15,11 @@ interface FieldState {
   readonly debug: any;
   readonly started: boolean;
   readonly paused: boolean;
-  readonly seconds: number;
   readonly trail: Model.Trail;
 }
 
-export class Field extends React.PureComponent<FieldProps, FieldState> {
-  private interval: unknown;
+@observer
+export class Field extends React.Component<FieldProps, FieldState> {
 
   public constructor(props: FieldProps) {
     super(props);
@@ -29,28 +28,8 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
       debug: props.debug,
       started: false,
       paused: false,
-      seconds: 0,
       trail: props.trail
     };
-  }
-
-  public tick() {
-    this.setState(prevState => ({
-      seconds: prevState.seconds + 1
-    }));
-
-    if (this.state.seconds >= this.state.trail.duration) {
-      this.finish();
-    }
-  }
-
-  public componentDidMount() {
-    this.startTimer();
-  }
-
-  public componentWillUnmount() {
-    // tslint:disable-next-line:no-any
-    clearInterval(this.interval as any);
   }
 
   public render() {
@@ -61,7 +40,7 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
         </div>
         <h3>
           {this.state.debug.verbose}
-          Time left: {this.timeLeft()}, hits: {this.state.trail.hitCount},
+          Time left: {this.state.trail.remainingTime}, hits: {this.state.trail.hitCount},
           fails: {this.state.trail.failCount}
         </h3>
         <Card className="container">
@@ -117,10 +96,6 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
     );
   }
 
-  private startTimer = () => {
-    this.interval = setInterval(() => this.tick(), 1000);
-  }
-
   private getColor = (value: number) => {
     const color = ['#f30013', '#0072cf', '#66bc29', '#f4af00'];
     return color[value];
@@ -169,16 +144,7 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
   }
 
   private finish = () => {
-    // tslint:disable-next-line:no-any
-    clearInterval(this.interval as any);
     this.props.nextStep();
-  }
-
-  private timeLeft = () => {
-    const remaining = this.state.trail.duration - this.state.seconds;
-    const mins = Math.floor(remaining / 60);
-    const secs = Math.floor(remaining % 60);
-    return leftPad(mins, 2) + ':' + leftPad(secs, 2);
   }
 
   private debugPanel() {

@@ -9,7 +9,7 @@ import './App.css';
 import { PanelControl } from './PanelControl';
 import * as Model from './Model';
 
-const trail = new Model.Trail();
+const trail = new Model.Trail({ pulse: new Model.Pulse() });
 
 function App() {
   return <div>

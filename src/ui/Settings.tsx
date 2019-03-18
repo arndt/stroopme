@@ -70,11 +70,7 @@ export class Settings extends React.PureComponent<
           <div>
             <TimeInput
               type="text"
-              initTime={
-                leftPad(Math.floor(this.props.trail.duration / 60), 2) +
-                ':' +
-                leftPad(this.props.trail.duration % 60, 2)
-              }
+              initTime={this.props.trail.remainingTime}
               className="form-control"
               mountFocus={true}
               onTimeChange={this.handleDurationFieldChange}
