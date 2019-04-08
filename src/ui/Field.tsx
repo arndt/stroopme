@@ -35,15 +35,19 @@ enum FieldButtonType {
 function colorize (props: {position: FieldButtonType}) {
   switch (props.position) {
     case FieldButtonType.TOP_LEFT:
+      return 'blue';
+    break;
+    case FieldButtonType.TOP_RIGHT:
+      return 'blue';
     break;
     default:
-    return 'red';
+      return 'red';
   }
   return 'black';
 }
 
 const FieldButton = styled(Button as React.SFC<FieldButtonProps>)`
-  background-color: $((props) => colorize(props))
+  background: ${(props) => colorize(props)};
   flex: 30%;
   margin-bottom: 10%;
   font-weight: bold;
@@ -86,14 +90,14 @@ export class Field extends React.Component<FieldProps, FieldState> {
             {this.getCaption(this.state.trail.current.choices[0])}
           </FieldButton>
           <div className="box-spacer" />
-          <Button
+          <FieldButton
             onClick={() => this.checkAnswer(1)}
-            className="box-top-right"
+            position={FieldButtonType.TOP_RIGHT}
             variant="contained"
             disabled={this.state.paused}
           >
             {this.getCaption(this.state.trail.current.choices[1])}
-          </Button>
+          </FieldButton>
           <div className="box-spacer" />
           <Card className="box-center">
             <span
@@ -103,23 +107,23 @@ export class Field extends React.Component<FieldProps, FieldState> {
             </span>
           </Card>
           <div className="box-spacer" />
-          <Button
+          <FieldButton
             onClick={() => this.checkAnswer(2)}
-            className="box-bottom-left"
+            position={FieldButtonType.BOTTOM_LEFT}
             variant="contained"
             disabled={this.state.paused}
           >
             {this.getCaption(this.state.trail.current.choices[2])}
-          </Button>
+          </FieldButton>
           <div className="box-spacer" />
-          <Button
+          <FieldButton
             onClick={() => this.checkAnswer(3)}
-            className="box-bottom-right"
+            position={FieldButtonType.BOTTOM_RIGHT}
             variant="contained"
             disabled={this.state.paused}
           >
             {this.getCaption(this.state.trail.current.choices[3])}
-          </Button>
+          </FieldButton>
         </Card>
         {this.debugPanel()}
         <br />
