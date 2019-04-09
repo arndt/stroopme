@@ -2,13 +2,13 @@
 import * as Mobx from 'mobx';
 import * as leftPad from 'left-pad';
 
-enum TrailState {
+export enum TrailState {
   LAUNCHED,
   STARTED,
   FINISHED
 }
 
-enum TrailMode {
+export enum TrailMode {
   COLOR,
   TEXT
 }
@@ -135,8 +135,10 @@ export class Trail {
   public stopTime: number = 0;
   public duration: number = 90;
   public state: TrailState = TrailState.LAUNCHED;
-  public mode: TrailMode = TrailMode.COLOR;
-  public shuffle: boolean = false;
+  @Mobx.observable
+  public mode: TrailMode;
+  @Mobx.observable
+  public shuffle: boolean;
   public hitCount: number = 0;
   public failCount: number = 0;
   public index: number = 0;
@@ -145,11 +147,20 @@ export class Trail {
 
   constructor(props: TrailProps) {
     this.pulse = props.pulse;
+    // TODO: does not work
+    Mobx.action(() => {this.mode = TrailMode.COLOR; });
+    Mobx.action(() => {this.shuffle = false; });
+
+    this.mode = TrailMode.COLOR;
 
     Mobx.reaction(() => this.pulse.seconds, (data) => {
       if (data >= this.duration) {
         this.stop();
       }
+    });
+
+    Mobx.reaction(() => this.mode, (data) => {
+      console.log('game mode data changed ', data);
     });
   }
 

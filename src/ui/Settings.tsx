@@ -1,11 +1,14 @@
 import * as React from 'react';
-import { Button, Card, Switch } from '@material-ui/core';
+import { TextField, Paper, Typography, Button, Card, Switch } from '@material-ui/core';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { TimeInput } from './TimeInput';
 import * as Model from './Model';
 import leftPad = require('left-pad');
 import { DebugProps } from './DebugProps';
+import styled from '@emotion/styled';
+import { observer } from 'mobx-react';
+import { action } from 'mobx';
 
 export interface SettingsProps {
   readonly trail: Model.Trail;
@@ -18,13 +21,29 @@ interface SettingsState {
   validForm: boolean;
 }
 
-export class Settings extends React.PureComponent<
-  SettingsProps,
-  SettingsState
+const SettingsCard = styled(Card as React.FunctionComponent)`
+    margin-top: 48px;
+    margin-bottom: 48px;
+    padding: 24px;
+`;
+
+const SettingsContent = styled('div')`
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+@observer
+export class Settings extends React.Component<
+SettingsProps,
+SettingsState
 > {
   constructor(props: SettingsProps) {
     super(props);
-    this.state = { verbose: true, validForm: false };
+    this.state = {
+      verbose: props.debug.verbose,
+      validForm: false
+    };
   }
 
   public componentDidMount() {
@@ -33,42 +52,55 @@ export class Settings extends React.PureComponent<
 
   public render = () => {
     return (
-      <Card>
-        <Card className="example-card hide">
-          <div className="example-header">Settings</div>
-          <h3>Your e-mail address</h3>
-          <input
+      <SettingsContent>
+        <SettingsCard>
+          <Typography component="h1" variant="h4" align="center">
+            Settings
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Your e-mail address
+          </Typography>
+          <TextField
+            id="name"
             name="name"
             type="email"
+            label="E-Mail Address"
+            fullWidth
             required={true}
-            className="form-control email"
             defaultValue={this.props.trail.name}
             onChange={this.handleNameChange}
           />
-          <h3>Game mode</h3>
+          <p />
+          <Typography variant="h6">
+            Game mode
+          </Typography>
           <ToggleButtonGroup>
             <ToggleButton
-              onClick={this.handleModeChange.bind(this, 0)}
-              selected={this.props.trail.mode === 0}
+              value={Model.TrailMode.COLOR}
+              onClick={() => this.handleModeChange(Model.TrailMode.COLOR)}
+              selected={this.props.trail.mode === Model.TrailMode.COLOR}
             >
               Color mode
             </ToggleButton>
             <ToggleButton
-              onClick={this.handleModeChange.bind(this, 1)}
-              selected={this.props.trail.mode === 1}
+              value={Model.TrailMode.TEXT}
+              onClick={() => this.handleModeChange(Model.TrailMode.TEXT)}
+              selected={this.props.trail.mode === Model.TrailMode.TEXT}
             >
               Text mode
             </ToggleButton>
           </ToggleButtonGroup>
-          <p />
-          <div>
+          <Typography>
             <Switch
               checked={this.props.trail.shuffle}
-              value="Shuffle answers"
+              value={true}
               onChange={this.handleShuffleSwitchChange}
             />
-          </div>
-          <h3>Duration</h3>
+             Shuffle answers
+           </Typography>
+          <Typography variant="h6" gutterBottom>
+            Duration
+            </Typography>
           <div>
             <TimeInput
               type="text"
@@ -79,22 +111,28 @@ export class Settings extends React.PureComponent<
             />
           </div>
 
-          <h3>Debugging</h3>
+          <Typography variant="h6" gutterBottom>
+            Debugging
+            </Typography>
+          <Typography>
           <Switch
-            checked={this.props.debug.verbose}
-            value="Pause on results"
+            checked={this.state.verbose}
+            value={true}
             onChange={this.handleDebuggingChange}
-          />
-        </Card>
-        <Button
-          disabled={!this.state.validForm}
-          onClick={this.handleStartButtonClick}
-        >
-          Start challenge
+          />Pause on results
+          </Typography>
+          {!this.state.validForm &&
+            ' Please enter your mail above to identify yourself'}
+          <p />
+          <Button
+            variant="contained" color="primary"
+            disabled={!this.state.validForm}
+            onClick={this.handleStartButtonClick}
+          >
+            Start challenge
         </Button>
-        {!this.state.validForm &&
-          ' Please enter your mail above to identify yourself'}
-      </Card>
+        </SettingsCard>
+      </SettingsContent>
     );
   }
 
@@ -105,16 +143,20 @@ export class Settings extends React.PureComponent<
   }
 
   private handleDebuggingChange = () => {
-    this.props.debug.verbose = !this.props.debug.verbose;
+    this.props.debug.verbose = !this.state.verbose;
+    this.setState({
+      verbose: this.props.debug.verbose
+    });
   }
 
   private handleStartButtonClick = () => {
     this.props.nextStep();
   }
 
-  private handleModeChange = (value: number) => {
+  @action
+  private handleModeChange = (value: Model.TrailMode) => {
     this.props.trail.mode = value;
-    // WHAAT!?
+    // TODO: fixme
     this.forceUpdate();
   }
 
@@ -124,6 +166,7 @@ export class Settings extends React.PureComponent<
     this.props.trail.duration = mins * 60 + secs;
   }
 
+  @action
   private handleShuffleSwitchChange = () => {
     this.props.trail.shuffle = !this.props.trail.shuffle;
   }
