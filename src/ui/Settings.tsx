@@ -50,7 +50,7 @@ SettingsState
     this.validateName(this.props.trail.name);
   }
 
-  public render = () => {
+  public render() {
     return (
       <SettingsContent>
         <SettingsCard>
@@ -156,8 +156,6 @@ SettingsState
   @action
   private handleModeChange = (value: Model.TrailMode) => {
     this.props.trail.mode = value;
-    // TODO: fixme
-    this.forceUpdate();
   }
 
   private handleDurationFieldChange = (value: string) => {

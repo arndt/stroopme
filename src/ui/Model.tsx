@@ -147,11 +147,8 @@ export class Trail {
 
   constructor(props: TrailProps) {
     this.pulse = props.pulse;
-    // TODO: does not work
-    Mobx.action(() => {this.mode = TrailMode.COLOR; });
-    Mobx.action(() => {this.shuffle = false; });
-
-    this.mode = TrailMode.COLOR;
+    Mobx.action(() => {this.mode = TrailMode.COLOR; })();
+    Mobx.action(() => {this.shuffle = false; })();
 
     Mobx.reaction(() => this.pulse.seconds, (data) => {
       if (data >= this.duration) {
