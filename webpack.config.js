@@ -7,7 +7,8 @@ const webpack = require('webpack');
 
 let appConfig = {};
 try {
-  const configData = fs.readFileSync('./appconfig.json');
+  const configData = fs.readFileSync('./appconfig.json').toString();
+  appConfig = JSON.parse(configData);
 } catch (e) {
   console.warn('firebase configuration not found. copy appconfig.dist.json to appconfig.json an apply your personal settings', e);  
 }
